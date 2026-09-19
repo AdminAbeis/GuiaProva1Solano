@@ -1,0 +1,814 @@
+<title>Adm. da Produção — 1ª Prova</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,500..900&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+:root{
+  --ground:#EEF1EF; --surface:#FFFFFF; --sunken:#E3E8E5; --ink:#16201D; --muted:#56635E; --line:#CBD4D0;
+  --teal:#0E5E57; --teal-soft:#D5E8E4; --mark:#F2C230; --mark-soft:#FBEFC4; --mark-ink:#5A4300;
+  --good:#1E7A45; --good-soft:#DCF0E3; --bad:#B23A2E; --bad-soft:#F6DEDA;
+  --display:"Archivo","Arial Narrow",system-ui,sans-serif;
+  --body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ground:#101614; --surface:#18201E; --sunken:#0B100F; --ink:#E4EBE8; --muted:#94A39D; --line:#2C3834;
+    --teal:#63C2B6; --teal-soft:#16332F; --mark:#F2C94C; --mark-soft:#3A3113; --mark-ink:#F7DD8A;
+    --good:#6CCB91; --good-soft:#15301F; --bad:#EE8A7E; --bad-soft:#3A1C18;
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#101614; --surface:#18201E; --sunken:#0B100F; --ink:#E4EBE8; --muted:#94A39D; --line:#2C3834;
+  --teal:#63C2B6; --teal-soft:#16332F; --mark:#F2C94C; --mark-soft:#3A3113; --mark-ink:#F7DD8A;
+  --good:#6CCB91; --good-soft:#15301F; --bad:#EE8A7E; --bad-soft:#3A1C18;
+}
+*{box-sizing:border-box}
+body{background:var(--ground);color:var(--ink);font:16px/1.6 var(--body);padding-inline:16px;padding-block:0 64px}
+.wrap{max-width:1040px;margin:0 auto}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.1}
+h2{font-size:clamp(1.7rem,4vw,2.4rem);font-weight:800;font-stretch:88%;letter-spacing:-.01em}
+h3{font-size:1.15rem;font-weight:700;font-stretch:100%;margin-top:4px}
+p{margin:0}
+.muted{color:var(--muted)}
+.mono,code{font-family:var(--mono);font-size:.92em}
+mark{background:var(--mark-soft);color:inherit;padding:0 .2em;border-radius:2px}
+strong{font-weight:600}
+
+/* header */
+.top{padding-block:40px 20px;display:grid;grid-template-columns:1fr auto;gap:24px;align-items:end;border-bottom:2px solid var(--ink)}
+.eyebrow{font:600 .75rem/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--teal)}
+.top h1{font-size:clamp(2.2rem,7vw,4.4rem);font-weight:900;font-stretch:72%;letter-spacing:-.02em;margin-top:10px;text-transform:uppercase}
+.top .sub{margin-top:10px;color:var(--muted);max-width:60ch}
+.count{border:2px solid var(--ink);background:var(--mark);color:#1d1600;padding:12px 16px;text-align:center;min-width:150px}
+.count b{display:block;font:900 3rem/1 var(--display);font-stretch:70%}
+.count span{font:600 .72rem/1.3 var(--mono);letter-spacing:.08em;text-transform:uppercase}
+@media (max-width:620px){.top{grid-template-columns:1fr}.count{justify-self:start}}
+
+/* nav */
+nav.toc{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--ground);padding-block:10px;border-bottom:1px solid var(--line);display:flex;gap:6px;overflow-x:auto;scrollbar-width:thin}
+nav.toc a{flex:0 0 auto;font:500 .82rem/1 var(--mono);color:var(--ink);text-decoration:none;padding:8px 10px;border:1px solid var(--line);background:var(--surface);border-radius:3px}
+nav.toc a:hover,nav.toc a:focus-visible{border-color:var(--teal);color:var(--teal);outline:none}
+nav.toc a.done::before{content:"✓ ";color:var(--good)}
+
+/* progress/map */
+.map{margin-top:28px;display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:8px}
+.map label{display:flex;gap:10px;align-items:flex-start;background:var(--surface);border:1px solid var(--line);padding:10px 12px;cursor:pointer;font-size:.9rem;line-height:1.35}
+.map input{accent-color:var(--teal);margin-top:3px;width:16px;height:16px;flex:0 0 auto}
+.map .n{font:600 .72rem/1 var(--mono);color:var(--teal);display:block;margin-bottom:3px}
+.bar{height:6px;background:var(--sunken);margin-top:14px;position:relative}
+.bar i{position:absolute;inset:0 auto 0 0;background:var(--teal);transition:width .3s}
+.bar-lbl{font:500 .8rem var(--mono);color:var(--muted);margin-top:6px}
+
+/* sections */
+section.block{padding-top:56px;scroll-margin-top:60px}
+.sec-head{display:grid;grid-template-columns:auto 1fr;gap:6px 16px;align-items:baseline;margin-bottom:22px;padding-bottom:12px;border-bottom:1px solid var(--line)}
+.sec-head .tag{font:600 .75rem/1 var(--mono);background:var(--ink);color:var(--ground);padding:6px 8px;letter-spacing:.06em}
+.sec-head p{grid-column:1/-1;color:var(--muted);max-width:70ch}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.card{background:var(--surface);border:1px solid var(--line);padding:18px 18px 16px;display:flex;flex-direction:column;gap:10px}
+.card ul,.card ol{margin:0;padding-left:1.15em}
+.card li+li{margin-top:4px}
+.stack{display:flex;flex-direction:column;gap:16px}
+.lede{font-size:1.05rem;max-width:68ch}
+.def{border-left:3px solid var(--teal);padding:4px 0 4px 14px;max-width:72ch}
+.def .who{font:500 .78rem var(--mono);color:var(--muted);margin-top:4px}
+
+/* callouts */
+.trap{background:var(--mark-soft);border:1px solid var(--mark);padding:12px 14px;font-size:.95rem}
+.trap b.lbl{font:700 .72rem/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--mark-ink);display:block;margin-bottom:6px}
+.key{background:var(--teal-soft);padding:12px 14px;font-size:.95rem}
+.key b.lbl{font:700 .72rem/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--teal);display:block;margin-bottom:6px}
+
+/* tables */
+.tbl{overflow-x:auto;border:1px solid var(--line);background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:.92rem}
+th,td{padding:9px 12px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line)}
+th{font:600 .74rem/1.2 var(--mono);text-transform:uppercase;letter-spacing:.06em;color:var(--muted);background:var(--sunken)}
+tr:last-child td{border-bottom:0}
+td.num,th.num{text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+td.up{color:var(--good);font-weight:600}
+td.down{color:var(--bad);font-weight:600}
+
+/* formula */
+.f{font-family:var(--mono);font-size:.95rem;background:var(--sunken);padding:10px 12px;border-radius:2px;overflow-x:auto;white-space:nowrap}
+.f .frac{display:inline-flex;flex-direction:column;vertical-align:middle;text-align:center;margin:0 4px}
+.f .frac>span:first-child{border-bottom:1.5px solid currentColor;padding:0 4px 2px}
+.f .frac>span:last-child{padding:2px 4px 0}
+.f em{font-style:normal;color:var(--teal);font-weight:600}
+
+/* flow diagram */
+.flow{display:grid;grid-template-columns:1fr auto 1.2fr auto 1fr;gap:8px;align-items:stretch}
+.flow .box{background:var(--surface);border:1.5px solid var(--ink);padding:12px;font-size:.88rem}
+.flow .box h4{margin:0 0 6px;font:700 .8rem var(--mono);text-transform:uppercase;letter-spacing:.06em;color:var(--teal)}
+.flow .arrow{align-self:center;font:700 1.4rem var(--mono);color:var(--muted)}
+.flow .fb{grid-column:1/-1;text-align:center;font:500 .8rem var(--mono);color:var(--muted);border:1px dashed var(--line);padding:6px}
+@media (max-width:680px){.flow{grid-template-columns:1fr}.flow .arrow{transform:rotate(90deg);justify-self:center}}
+
+/* objectives */
+.obj{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:8px}
+.obj div{background:var(--surface);border:1px solid var(--line);border-top:4px solid var(--teal);padding:12px;font-size:.88rem}
+.obj b{display:block;font:800 1.05rem var(--display);font-stretch:90%;margin-bottom:4px}
+
+/* cone */
+.cone{display:flex;flex-direction:column;align-items:center;gap:3px;margin:6px 0}
+.cone div{background:var(--teal);color:var(--surface);font:600 .82rem var(--mono);padding:7px 10px;text-align:center}
+:root[data-theme="dark"] .cone div{color:#0b1412}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .cone div{color:#0b1412}}
+
+/* calculators */
+.calc{background:var(--surface);border:2px solid var(--ink);padding:18px}
+.calc h3{display:flex;gap:10px;align-items:center}
+.calc h3::before{content:"";width:10px;height:10px;background:var(--mark);border:1.5px solid var(--ink)}
+.fields{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-top:12px}
+.fields label{display:flex;flex-direction:column;gap:4px;font:500 .75rem var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+input[type=number]{font:500 1rem var(--mono);padding:8px 10px;border:1px solid var(--line);background:var(--ground);color:var(--ink);width:100%;border-radius:2px}
+input[type=number]:focus-visible,button:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+.out{display:grid;grid-template-columns:repeat(4,1fr);margin-top:14px;padding:1px 0 0 1px}
+@media (max-width:760px){.out{grid-template-columns:repeat(2,1fr)}}
+.out div{background:var(--surface);padding:10px 12px;border:1px solid var(--line);margin:-1px 0 0 -1px}
+.out small{display:block;font:500 .7rem var(--mono);text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.out b{font:600 1.15rem var(--mono);font-variant-numeric:tabular-nums}
+.out b.neg{color:var(--bad)} .out b.pos{color:var(--good)}
+.chart-wrap{margin-top:14px;overflow-x:auto}
+.chart-wrap svg{display:block;width:100%;min-width:520px;height:auto}
+.btnrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+button{font:600 .85rem var(--mono);padding:8px 12px;border:1.5px solid var(--ink);background:var(--surface);color:var(--ink);cursor:pointer;border-radius:2px}
+button:hover{background:var(--sunken)}
+button.primary{background:var(--ink);color:var(--ground)}
+.mtx input{width:64px;padding:5px 6px;font-size:.9rem;text-align:center}
+.mtx td,.mtx th{text-align:center;vertical-align:middle}
+.mtx td:first-child,.mtx th:first-child{text-align:left}
+.win{background:var(--good-soft)}
+
+/* tree */
+.tree{overflow-x:auto;background:var(--surface);border:1px solid var(--line);padding:10px}
+.tree svg{display:block;min-width:900px;width:100%;height:auto}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font:500 .8rem var(--mono);color:var(--muted);margin-top:8px}
+
+/* quiz */
+.quiz{background:var(--surface);border:2px solid var(--ink);padding:20px}
+.qhead{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font:600 .8rem var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.qtext{font:700 1.25rem/1.3 var(--display);font-stretch:95%;margin:14px 0}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opts button{text-align:left;font:400 .98rem/1.4 var(--body);padding:12px 14px;border:1.5px solid var(--line);background:var(--ground)}
+.opts button:hover:not(:disabled){border-color:var(--teal)}
+.opts button.ok{border-color:var(--good);background:var(--good-soft)}
+.opts button.no{border-color:var(--bad);background:var(--bad-soft)}
+.opts button:disabled{cursor:default;color:var(--ink)}
+.expl{margin-top:12px;padding:12px 14px;background:var(--teal-soft);font-size:.95rem}
+.qnav{display:flex;justify-content:space-between;align-items:center;margin-top:16px;gap:10px;flex-wrap:wrap}
+.dots{display:flex;gap:4px;flex-wrap:wrap}
+.dots i{width:10px;height:10px;background:var(--sunken);border:1px solid var(--line)}
+.dots i.ok{background:var(--good);border-color:var(--good)} .dots i.no{background:var(--bad);border-color:var(--bad)} .dots i.cur{outline:2px solid var(--ink)}
+
+/* formulário */
+.sheet{columns:2 360px;column-gap:16px}
+.sheet .fi{break-inside:avoid;background:var(--surface);border:1px solid var(--line);padding:12px 14px;margin-bottom:12px}
+.sheet .fi h4{margin:0 0 8px;font:700 .78rem var(--mono);text-transform:uppercase;letter-spacing:.06em;color:var(--teal)}
+.sheet .fi .f{margin-top:6px}
+.sheet .fi p{font-size:.86rem;color:var(--muted);margin-top:6px}
+
+footer{margin-top:64px;padding-top:16px;border-top:1px solid var(--line);font:500 .8rem var(--mono);color:var(--muted)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+html{scroll-behavior:smooth}
+@media print{nav.toc,#quiz,.btnrow,.map{display:none}section.block{padding-top:24px}.calc{break-inside:avoid}}
+</style>
+
+<div class="wrap">
+<header class="top">
+  <div>
+    <div class="eyebrow">UNIPAR · Adm. das Operações de Produção · Prof. Solano</div>
+    <h1>Guia da 1ª prova</h1>
+    <p class="sub">As aulas 1 a 11 condensadas: conceitos, fórmulas, os exercícios de sala resolvidos e um simulado. Calculadoras já vêm com os dados dos casos da aula — troque os números para treinar.</p>
+  </div>
+  <div class="count" id="count"><b id="cd">–</b><span id="cdl">dias para a prova<br>qui · 24/09/2026</span></div>
+</header>
+
+<nav class="toc" id="toc" aria-label="Seções">
+  <a href="#fund" data-s="fund">Fundamentos</a>
+  <a href="#prod" data-s="prod">Produtividade</a>
+  <a href="#estr" data-s="estr">Estratégia</a>
+  <a href="#dec" data-s="dec">Decisão</a>
+  <a href="#met" data-s="met">Métodos</a>
+  <a href="#pe" data-s="pe">Ponto de equilíbrio</a>
+  <a href="#sust" data-s="sust">Sustentabilidade</a>
+  <a href="#formulas">Formulário</a>
+  <a href="#quiz">Simulado</a>
+</nav>
+
+<div class="map" id="map"></div>
+<div class="bar"><i id="barfill" style="width:0"></i></div>
+<div class="bar-lbl" id="barlbl">0 de 7 blocos revisados</div>
+
+<!-- ============ FUNDAMENTOS ============ -->
+<section class="block" id="fund">
+  <div class="sec-head"><span class="tag">AULAS 1–4</span><h2>Fundamentos das operações</h2>
+  <p>Modelo de transformação, bens × serviços, os cinco objetivos de desempenho e o papel do gerente de operações.</p></div>
+
+  <div class="stack">
+    <div class="grid2">
+      <div class="def"><p>A Administração das Operações é a área responsável pelo <strong>planejamento, organização, direção e controle dos recursos</strong> utilizados para produzir bens e prestar serviços.</p></div>
+      <div class="stack" style="gap:8px">
+        <div class="def"><p>“Transforma recursos de entrada em produtos e serviços, agregando valor através de processos.”</p><div class="who">Slack, Chambers e Johnston</div></div>
+        <div class="def"><p>“O projeto, a operação e a melhoria dos sistemas que criam e entregam os produtos e serviços primários.”</p><div class="who">Chase, Aquilano e Jacobs</div></div>
+        <div class="def"><p>“Planejamento, organização e controle das atividades que transformam insumos… com foco na eficiência e na satisfação do cliente.”</p><div class="who">Bowersox e Closs</div></div>
+      </div>
+    </div>
+
+    <h3>Modelo de transformação (input → processo → output)</h3>
+    <div class="flow">
+      <div class="box"><h4>Entradas</h4><b>Recursos transformados</b> (sofrem a mudança): materiais, informações, consumidores.<br><b>Recursos de transformação</b> (agem sobre eles): instalações/máquinas, tecnologia, trabalhadores.</div>
+      <div class="arrow">→</div>
+      <div class="box"><h4>Processo transformativo</h4>Atividades que agregam valor: produzir, montar, preparar, atender, diagnosticar, ensinar.</div>
+      <div class="arrow">→</div>
+      <div class="box"><h4>Saídas</h4>Bens, serviços ou combinação (pacote de valor).</div>
+      <div class="fb">↺ Retroalimentação: as saídas informam melhorias nas entradas</div>
+    </div>
+    <div class="trap"><b class="lbl">Pegadinha</b>No hospital, o <strong>paciente</strong> é recurso <em>transformado</em> (consumidor). O médico e os equipamentos são recursos <em>de transformação</em>. Na universidade, o estudante é transformado e ainda <strong>participa</strong> (coprodutor). Produção <strong>não</strong> existe só em fábrica — toda organização tem função de operações.</div>
+
+    <h3>Bens × serviços</h3>
+    <div class="grid2">
+      <div class="tbl"><table>
+        <tr><th>Bens</th><th>Serviços</th></tr>
+        <tr><td>Predominantemente tangíveis</td><td>Predominantemente intangíveis</td></tr>
+        <tr><td>Podem ser estocados e transportados</td><td>Não podem ser estocados</td></tr>
+        <tr><td>Produção ≠ momento do consumo</td><td>Produção e consumo simultâneos</td></tr>
+        <tr><td>Inspeção antes da entrega; defeito pode ser retido</td><td>Falha ocorre diante do cliente</td></tr>
+        <tr><td>Pouca participação do cliente</td><td>Cliente é coprodutor</td></tr>
+      </table></div>
+      <div class="card">
+        <p>A distinção é <strong>relativa</strong>: as ofertas ficam num <strong>continuum bens–serviços</strong>. O <strong>pacote de valor</strong> é a combinação de bens + serviços que o cliente avalia por inteiro (ex.: restaurante = alimento + ambiente + atendimento + entrega).</p>
+        <p class="muted" style="font-size:.9rem">Qualidade percebida não substitui qualidade técnica: “um atendimento cordial não compensa um diagnóstico incorreto”.</p>
+      </div>
+    </div>
+
+    <div class="tbl"><table>
+      <tr><th>Característica do serviço</th><th>O que significa</th><th>Implicação gerencial</th></tr>
+      <tr><td><strong>Intangibilidade</strong></td><td>Não dá para examinar antes da experiência; maior risco percebido</td><td>Criar evidências (instalações, uniforme, certificação) e confiança</td></tr>
+      <tr><td><strong>Simultaneidade</strong></td><td>Produção e consumo ao mesmo tempo (aula, consulta, corte de cabelo)</td><td>Prevenir falhas durante a prestação</td></tr>
+      <tr><td><strong>Participação do cliente</strong></td><td>Cliente coprodutor (fornece informações, adere ao tratamento)</td><td>Orientar e administrar a interação</td></tr>
+      <tr><td><strong>Variabilidade</strong></td><td>Desempenho muda conforme profissional, cliente, horário, local</td><td>Treinar, padronizar e monitorar</td></tr>
+      <tr><td><strong>Perecibilidade</strong></td><td>“A diária não vendida ontem não pode ser estocada para amanhã”</td><td>Equilibrar demanda e capacidade: reservas, preço por horário, temporários, atendimento digital</td></tr>
+    </table></div>
+
+    <h3>Os cinco objetivos de desempenho</h3>
+    <div class="obj">
+      <div><b>Qualidade</b>Fazer certo da 1ª vez, sem erro ou retrabalho. Efeito interno: menos erros → menos retrabalho → menor custo.</div>
+      <div><b>Rapidez</b>Tempo entre o pedido e a entrega. Reduz estoques e espera.</div>
+      <div><b>Confiabilidade</b>Cumprir o que foi prometido (prazo, condições). Gera estabilidade.</div>
+      <div><b>Flexibilidade</b>Mudar produto/serviço, mix/variedade, volume e entrega.</div>
+      <div><b>Custo</b>Menor consumo de recursos. Reduzir custo ≠ cortar recursos; é eliminar desperdício.</div>
+    </div>
+    <div class="grid2">
+      <div class="trap"><b class="lbl">Clássico de prova</b>Empresa A promete 2 dias e entrega em 4. Empresa B promete 5 e sempre cumpre. <strong>A é mais rápida na promessa; B é mais confiável.</strong> Rapidez = tempo; confiabilidade = cumprir a promessa.</div>
+      <div class="key"><b class="lbl">Eficiência × eficácia × valor</b><strong>Eficiência</strong>: uso adequado dos recursos (“estamos fazendo da melhor maneira?”). <strong>Eficácia</strong>: alcance dos objetivos (“entregamos o resultado correto?”). <strong>Agregação de valor</strong>: o processo torna a entrada mais útil ao cliente.</div>
+    </div>
+    <div class="grid2">
+      <div class="card"><h3>Trade-offs</h3><p>Melhorar um objetivo pode exigir sacrifício em outro: mais personalização → custo maior; mais rapidez → mais capacidade; estoque baixo → risco de falta; mais inspeção → mais tempo. <strong>Nem todo conflito é inevitável</strong> — melhorar processos pode elevar vários ao mesmo tempo.</p></div>
+      <div class="card"><h3>Prioridades variam</h3><p><strong>Restaurante popular</strong>: custo e rapidez, padronização, alto volume. <strong>Alta gastronomia</strong>: qualidade e flexibilidade, personalização, baixo volume. Não existe ordem universal — a estratégia define.</p></div>
+    </div>
+
+    <h3>Gerente de operações e níveis de decisão</h3>
+    <p class="lede">Planeja, organiza, coordena, controla e melhora os processos. Responsabilidades: <strong>projetar processos</strong> (como fazer), <strong>planejar capacidade</strong> (quanto é possível fazer), administrar recursos, planejar e controlar atividades, garantir qualidade, coordenar fornecedores e estoques, melhorar processos. Integra-se a marketing, finanças, RH, TI e logística. “Controlar não é só fiscalizar: é comparar realizado × planejado e agir sobre os desvios.”</p>
+    <div class="tbl"><table>
+      <tr><th>Critério</th><th>Estratégico</th><th>Tático</th><th>Operacional</th></tr>
+      <tr><td>Horizonte</td><td>Longo prazo</td><td>Médio prazo</td><td>Curto prazo</td></tr>
+      <tr><td>Abrangência</td><td>Organização ou rede</td><td>Área ou unidade</td><td>Processo ou atividade</td></tr>
+      <tr><td>Frequência</td><td>Baixa</td><td>Periódica</td><td>Elevada</td></tr>
+      <tr><td>Reversibilidade</td><td>Difícil</td><td>Intermediária</td><td>Maior</td></tr>
+      <tr><td>Exemplos</td><td>Nova fábrica, localização, capacidade instalada, nova tecnologia, terceirizar, rede de fornecedores</td><td>Capacidade mensal, política de estoque, seleção de fornecedores, turnos/escalas, manutenção preventiva, temporários</td><td>Sequenciar pedidos, substituir ausente, liberar material, ajustar máquina, reprogramar o dia</td></tr>
+    </table></div>
+    <div class="trap"><b class="lbl">Pegadinha</b>A classificação depende de <strong>horizonte, impacto e abrangência</strong>, não do assunto. Substituir um trabalhador ausente = operacional; ampliar o quadro permanentemente = tático ou estratégico.</div>
+  </div>
+</section>
+
+<!-- ============ PRODUTIVIDADE ============ -->
+<section class="block" id="prod">
+  <div class="sec-head"><span class="tag">AULA 5 + ATIVIDADE</span><h2>Produtividade</h2>
+  <p>Relação entre resultados e recursos. É a parte de cálculo que mais pesa — sempre com unidade de medida.</p></div>
+  <div class="stack">
+    <div class="grid2">
+      <div class="card">
+        <h3>Fórmulas</h3>
+        <div class="f">Produtividade = <span class="frac"><span>saídas</span><span>entradas</span></span></div>
+        <div class="f">Parcial = <span class="frac"><span>quantidade produzida</span><span>quantidade de UM recurso</span></span></div>
+        <div class="f">Multifatorial = <span class="frac"><span>valor das saídas (R$)</span><span>custo total dos recursos (R$)</span></span></div>
+        <div class="f">Variação % = <span class="frac"><span>nova − anterior</span><span>anterior</span></span> × 100</div>
+      </div>
+      <div class="card">
+        <h3>Produção ≠ produtividade</h3>
+        <div class="tbl"><table>
+          <tr><th>Mês</th><th class="num">Produção</th><th class="num">Horas</th><th class="num">Prod.</th></tr>
+          <tr><td>Jan</td><td class="num">800</td><td class="num">400</td><td class="num">2,00 u/h</td></tr>
+          <tr><td>Fev</td><td class="num">1.000</td><td class="num">600</td><td class="num">1,67 u/h</td></tr>
+        </table></div>
+        <p>Produção subiu 25%, horas subiram 50% → <strong>produtividade caiu</strong>. Dá para produzir mais e ficar menos produtivo.</p>
+      </div>
+    </div>
+    <div class="tbl"><table>
+      <tr><th>Exemplo da aula</th><th>Conta</th><th class="num">Resultado</th></tr>
+      <tr><td>Mão de obra: 720 un, 6 trab × 8 h</td><td class="mono">720 ÷ 48</td><td class="num">15 un/h de trabalho</td></tr>
+      <tr><td>Serviço: 180 consultas, 120 h médicas</td><td class="mono">180 ÷ 120</td><td class="num">1,5 consulta/h</td></tr>
+      <tr><td>Materiais: 720 un, 900 kg</td><td class="mono">720 ÷ 900</td><td class="num">0,80 un/kg</td></tr>
+      <tr><td>Energia: 720 un, 1.200 kWh</td><td class="mono">720 ÷ 1.200</td><td class="num">0,60 un/kWh</td></tr>
+      <tr><td>Multifatorial: R$ 180 mil ÷ (45+70+10+15 mil)</td><td class="mono">180.000 ÷ 140.000</td><td class="num">≈ 1,29</td></tr>
+      <tr><td>Variação: 12 → 15 un/h</td><td class="mono">(15−12)/12 × 100</td><td class="num">+25%</td></tr>
+      <tr><td>Variação: 5 → 4 atend./h</td><td class="mono">(4−5)/5 × 100</td><td class="num">−20%</td></tr>
+    </table></div>
+    <div class="grid2">
+      <div class="trap"><b class="lbl">Pegadinha</b>PMF 1,29 = R$ 1,29 de saída para cada R$ 1,00 de recursos. <strong>Não é lucro, margem nem retorno sobre investimento.</strong></div>
+      <div class="trap"><b class="lbl">Interpretação</b>Indicador maior nem sempre é melhor: compare períodos equivalentes, verifique defeitos/retrabalho, horas extras, custos, segurança, satisfação. Mais consultas/hora pode significar diagnóstico pior.</div>
+    </div>
+
+    <h3>Caso Fábrica Horizonte (correção em sala)</h3>
+    <div class="tbl"><table>
+      <tr><th>Indicador</th><th class="num">Julho</th><th class="num">Agosto</th><th class="num">Variação</th></tr>
+      <tr><td>Mão de obra</td><td class="num">2,00 un/h</td><td class="num">2,18 un/h</td><td class="num up">+9,09%</td></tr>
+      <tr><td>Materiais</td><td class="num">0,80 un/kg</td><td class="num">0,83 un/kg</td><td class="num up">+4,17%</td></tr>
+      <tr><td>Energia</td><td class="num">0,50 un/kWh</td><td class="num">0,56 un/kWh</td><td class="num up">+11,11%</td></tr>
+      <tr><td>Taxa de defeitos</td><td class="num">2%</td><td class="num">4%</td><td class="num down">dobrou</td></tr>
+      <tr><td>Produção</td><td class="num">1.000</td><td class="num">1.200</td><td class="num up">+20%</td></tr>
+    </table></div>
+    <p class="muted">Conclusão: indicadores parciais melhoraram, mas os defeitos dobraram → não dá para afirmar melhoria global sem olhar qualidade, custos e cliente.</p>
+
+    <h3>Caso FrigoVale (atividade 25/08 — gabarito)</h3>
+    <p class="muted">Regra do caso: quantidade produzida = só caixas <strong>aprovadas</strong> (total − rejeitadas).</p>
+    <div class="tbl"><table>
+      <tr><th>Indicador</th><th>Conta (jun → jul)</th><th class="num">Junho</th><th class="num">Julho</th><th class="num">Resultado</th></tr>
+      <tr><td>Produção boa</td><td class="mono">18.000−900 · 21.600−648</td><td class="num">17.100</td><td class="num">20.952</td><td class="num up">+22,53%</td></tr>
+      <tr><td>Índice de qualidade</td><td class="mono">boa ÷ total</td><td class="num">95%</td><td class="num">97%</td><td class="num up">+2 p.p.</td></tr>
+      <tr><td>Taxa de rejeição</td><td class="mono">rejeit. ÷ total</td><td class="num">5%</td><td class="num">3%</td><td class="num up">−2 p.p. (−40% rel.)</td></tr>
+      <tr><td>Horas totais</td><td class="mono">15×160 · 16×165</td><td class="num">2.400</td><td class="num">2.640</td><td class="num">—</td></tr>
+      <tr><td>Mão de obra (cx/h)</td><td class="mono">boa ÷ horas</td><td class="num">7,125</td><td class="num">7,936</td><td class="num up">+11,39%</td></tr>
+      <tr><td>Por trabalhador</td><td class="mono">boa ÷ trab.</td><td class="num">1.140</td><td class="num">1.309,5</td><td class="num up">+14,87%</td></tr>
+      <tr><td>Matéria-prima (cx/kg)</td><td class="mono">boa ÷ kg</td><td class="num">0,3563</td><td class="num">0,3880</td><td class="num up">+8,91%</td></tr>
+      <tr><td>Energia (cx/kWh)</td><td class="mono">boa ÷ kWh</td><td class="num">0,7125</td><td class="num">0,7619</td><td class="num up">+6,93%</td></tr>
+      <tr><td>Linha (cx/h func.)</td><td class="mono">boa ÷ h linha</td><td class="num">53,44</td><td class="num">63,49</td><td class="num up">+18,81%</td></tr>
+      <tr><td>Capacidade mensal</td><td class="mono">75 × h linha</td><td class="num">24.000</td><td class="num">24.750</td><td class="num">—</td></tr>
+      <tr><td>Utilização (total)</td><td class="mono">total ÷ capac.</td><td class="num">75,00%</td><td class="num">87,27%</td><td class="num up">+12,27 p.p.</td></tr>
+      <tr><td>Utilização (boa)</td><td class="mono">boa ÷ capac.</td><td class="num">71,25%</td><td class="num">84,65%</td><td class="num up">+13,40 p.p.</td></tr>
+      <tr><td>Custo total</td><td class="mono">MO+MP+energia+outros</td><td class="num">R$ 526.800</td><td class="num">R$ 614.320</td><td class="num">+16,61%</td></tr>
+      <tr><td>Valor produção boa</td><td class="mono">boa × R$42 · ×R$44</td><td class="num">R$ 718.200</td><td class="num">R$ 921.888</td><td class="num up">+28,36%</td></tr>
+      <tr><td>PMF</td><td class="mono">valor ÷ custo</td><td class="num">1,363</td><td class="num">1,501</td><td class="num up">+10,09%</td></tr>
+      <tr><td>PMF preço constante</td><td class="mono">20.952×42 ÷ 614.320</td><td class="num">1,363</td><td class="num">1,4325</td><td class="num up">+5,07%</td></tr>
+    </table></div>
+    <div class="grid2">
+      <div class="key"><b class="lbl">Conclusão do gabarito</b>Produziu mais <strong>e</strong> ficou mais produtiva. Ressalva: parte do ganho da PMF veio do reajuste de preço (10,09% vs 5,07% a preço constante), e não dá para atribuir tudo ao equipamento (treinamento e layout mudaram junto). Recomendação: manter o equipamento, monitorar 3–6 meses.</div>
+      <div class="trap"><b class="lbl">Recurso que exige atenção</b>Matéria-prima: <strong>≈ 73,84%</strong> do custo de julho (453.600 ÷ 614.320). Energia teve o menor avanço (+6,93%) enquanto o custo subiu 22,22%.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ESTRATÉGIA ============ -->
+<section class="block" id="estr">
+  <div class="sec-head"><span class="tag">AULA 6</span><h2>Competitividade e estratégia de operações</h2>
+  <p>Como transformar uma promessa feita ao mercado em capacidade operacional concreta.</p></div>
+  <div class="stack">
+    <div class="grid2">
+      <div class="def"><p><strong>Competitividade</strong> é a capacidade de criar valor e sustentar uma posição favorável diante dos concorrentes. Não é só menor preço: dá para competir por qualidade, rapidez, confiabilidade, flexibilidade, inovação ou experiência.</p><div class="who">Porter, 1985; Slack et al., 2023</div></div>
+      <div class="def"><p><strong>Estratégia</strong> é um conjunto coerente de escolhas — e <strong>renúncias</strong>. Tentar atender todos, com tudo, pelo menor preço e no menor prazo gera incoerência operacional (ex.: Móveis Horizonte querendo preço mínimo + 48 h + personalização total + zero estoque).</p><div class="who">Porter, 1985</div></div>
+    </div>
+    <div class="tbl"><table>
+      <tr><th>Nível da estratégia</th><th>Pergunta</th><th>Exemplo</th></tr>
+      <tr><td><strong>Corporativa</strong></td><td>Em quais negócios atuar?</td><td>Móveis e decoração</td></tr>
+      <tr><td><strong>De negócios</strong></td><td>Como competir?</td><td>Personalização e qualidade</td></tr>
+      <tr><td><strong>Funcional</strong></td><td>Como cada área apoia a estratégia?</td><td>Operação flexível</td></tr>
+      <tr><td><strong>Operacional</strong></td><td>Como executar os processos?</td><td>Produção por encomenda</td></tr>
+    </table></div>
+    <p class="lede"><strong>Estratégia de operações</strong>: padrão de decisões que determina as capacidades de longo prazo da operação (capacidade, localização, layout, tecnologia, processos, qualidade, estoques, cadeia de suprimentos, pessoas).</p>
+    <div class="grid2">
+      <div class="card"><h3>4 papéis das operações (Hayes)</h3><ol><li><strong>Apoiar</strong> — desenvolver capacidades para o posicionamento</li><li><strong>Corrigir problemas</strong> — evitar que falhas prejudiquem</li><li><strong>Impulsionar</strong> — criar capacidades para novos negócios</li><li><strong>Aprimorar</strong> — superar os concorrentes; operação vira fonte de inovação</li></ol></div>
+      <div class="card"><h3>4 perspectivas (Slack e Lewis)</h3><ul><li><strong>De cima para baixo</strong>: traduz a estratégia da empresa em diretrizes</li><li><strong>De baixo para cima</strong>: aprende com a experiência do dia a dia</li><li><strong>Requisitos do mercado</strong>: responde a clientes e concorrentes</li><li><strong>Recursos da operação</strong>: explora competências internas</li></ul></div>
+    </div>
+    <div class="grid2">
+      <div class="card"><h3>Qualificadores × ganhadores de pedido (Hill)</h3>
+        <p><strong>Qualificadores</strong>: condição mínima para entrar na lista do cliente (segurança, qualidade mínima, preço compatível, exigências legais).</p>
+        <p><strong>Ganhadores</strong>: fazem o cliente escolher você (rapidez, personalização, durabilidade superior, atendimento, menor preço).</p>
+        <p class="muted" style="font-size:.9rem">O que só qualifica num mercado pode ganhar pedidos em outro.</p></div>
+      <div class="card"><h3>Modelo do cone de areia (Ferdows e De Meyer)</h3>
+        <p>Prioridades se constroem de forma <strong>cumulativa</strong>, de baixo para cima:</p>
+        <div class="cone" aria-label="Cone de areia">
+          <div style="width:40%">Custo</div><div style="width:55%">Flexibilidade</div><div style="width:70%">Rapidez</div><div style="width:85%">Confiabilidade</div><div style="width:100%">Qualidade (base)</div>
+        </div>
+      </div>
+    </div>
+    <div class="tbl"><table>
+      <tr><th>Prioridade</th><th>Decisões coerentes</th><th>Indicadores</th></tr>
+      <tr><td><strong>Custo</strong></td><td>Escala, padronização, automação seletiva, controle de desperdício, negociação</td><td>Custo/unidade; % desperdício = desperdiçado ÷ total × 100; custo de transformação = (MO + overhead) ÷ qtd</td></tr>
+      <tr><td><strong>Qualidade</strong></td><td>Prevenção de falhas, treinamento, controle de processos</td><td>Taxa de defeitos; retrabalho; devoluções; NPS/CSAT; custo da não qualidade (falhas internas + externas)</td></tr>
+      <tr><td><strong>Rapidez</strong></td><td>Fluxos curtos, menos esperas e setup, integração de informação</td><td>Tempo de ciclo = tempo total ÷ unidades; tempo de atendimento = espera + processamento</td></tr>
+      <tr><td><strong>Confiabilidade</strong></td><td>Manutenção, fornecedores estáveis, programação realista</td><td>% entregas no prazo; % pedidos completos; atraso médio; cancelamentos</td></tr>
+      <tr><td><strong>Flexibilidade</strong></td><td>Trabalhador polivalente, equipamento adaptável, modularidade</td><td>Tempo de setup; amplitude de mix; variação de volume atendida; utilização da capacidade</td></tr>
+    </table></div>
+    <div class="trap"><b class="lbl">Frase para usar na discursiva</b>“Rapidez resulta de processos bem projetados; pressa costuma resultar de improvisação.” E: reconhecer trade-offs (Skinner, 1969) não é aceitar desempenho ruim — é entender as consequências das escolhas. Ex.: usar toda a capacidade → menor custo aparente, mas filas e atrasos.</div>
+  </div>
+</section>
+
+<!-- ============ DECISÃO ============ -->
+<section class="block" id="dec">
+  <div class="sec-head"><span class="tag">AULA 7</span><h2>Tomada de decisões em operações</h2>
+  <p>Decidir não é só escolher: é justificar por que uma alternativa é mais adequada.</p></div>
+  <div class="stack">
+    <div class="def"><p><strong>Tomada de decisão</strong> é o processo de reconhecer um problema ou oportunidade, compreender suas causas e selecionar um curso de ação justificado.</p><div class="who">Simon, 1997; Hammond, Keeney e Raiffa, 1999</div></div>
+    <div class="grid2">
+      <div class="card"><h3>Elementos de uma decisão</h3>
+        <div class="tbl" style="border:0"><table>
+          <tr><td>Problema</td><td>O que precisa ser resolvido?</td></tr>
+          <tr><td>Objetivo</td><td>Qual resultado alcançar? (específico e mensurável)</td></tr>
+          <tr><td>Alternativas</td><td>Quais cursos de ação?</td></tr>
+          <tr><td>Critérios</td><td>Como comparar? (refletem a estratégia, não o gosto do decisor)</td></tr>
+          <tr><td>Restrições</td><td>Quais limites? (orçamento, prazo, lei, espaço)</td></tr>
+          <tr><td>Informações</td><td>O que sabemos?</td></tr>
+          <tr><td>Consequências</td><td>O que pode acontecer?</td></tr>
+          <tr><td>Responsabilidade</td><td>Quem decide e responde?</td></tr>
+        </table></div></div>
+      <div class="stack">
+        <div class="card"><h3>Programadas × não programadas (Simon)</h3>
+          <p><strong>Programadas</strong>: recorrentes, com regra pronta — reposição pelo ponto de pedido, manutenção preventiva, inspeção por amostragem, emissão de ordens.</p>
+          <p><strong>Não programadas</strong>: novas, exigem julgamento — fornecedor para de entregar, nova tecnologia, terceirizar processo crítico, acidente, novo mercado.</p></div>
+        <div class="card"><h3>Racionalidade limitada (Simon)</h3><p>O gestor não tem toda a informação, tempo ou capacidade de cálculo → escolhe a alternativa <strong>satisfatória</strong>, não necessariamente a ótima.</p></div>
+      </div>
+    </div>
+    <div class="tbl"><table>
+      <tr><th>Condição</th><th>Característica</th><th>Exemplo</th></tr>
+      <tr><td><strong>Certeza</strong></td><td>Consequências conhecidas</td><td>Compra com preço e quantidade em contrato</td></tr>
+      <tr><td><strong>Risco</strong></td><td>Probabilidades estimáveis com dados</td><td>Equipamento com probabilidade histórica de falha</td></tr>
+      <tr><td><strong>Incerteza</strong></td><td>Probabilidades desconhecidas</td><td>Tecnologia emergente sem histórico</td></tr>
+      <tr><td><strong>Ambiguidade</strong></td><td>Problema ou objetivo mal definido</td><td>Mudar o modelo produtivo sem critérios claros</td></tr>
+    </table></div>
+    <div class="grid2">
+      <div class="card"><h3>Fases de Simon</h3><ol><li><strong>Inteligência</strong> (prospecção): examinar o ambiente, reconhecer o problema, coletar dados</li><li><strong>Concepção</strong> (projeto): criar e analisar alternativas</li><li><strong>Escolha</strong>: selecionar a mais adequada</li><li><strong>Implementação/revisão</strong>: executar e avaliar</li></ol></div>
+      <div class="card"><h3>9 etapas do processo decisório</h3><ol><li>Identificar o problema</li><li>Diagnosticar as causas</li><li>Definir objetivos</li><li>Estabelecer critérios e restrições</li><li>Desenvolver alternativas</li><li>Avaliar consequências</li><li>Escolher</li><li>Implementar</li><li>Monitorar e aprender</li></ol></div>
+    </div>
+    <div class="grid2">
+      <div class="key"><b class="lbl">Problema</b>Problema = situação desejada − situação atual. <strong>Sintoma não é causa</strong>: entregas atrasadas podem vir de programação ruim, baixa capacidade ou fornecedor instável.</div>
+      <div class="key"><b class="lbl">Gabarito Móveis Noroeste</b>Problema: capacidade insuficiente. Nível: <strong>tático</strong> com implicações estratégicas. Estrutura: <strong>não programada</strong>. Condição: <strong>risco e incerteza</strong>. Restrições: orçamento, prazo, espaço, mão de obra, legislação.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ MÉTODOS ============ -->
+<section class="block" id="met">
+  <div class="sec-head"><span class="tag">AULA 8 + ATIVIDADE 17/09</span><h2>Métodos de apoio à decisão</h2>
+  <p>O método apoia a decisão; não decide sozinho. Matriz ponderada, valor esperado e árvore de decisão são os de cálculo.</p></div>
+  <div class="stack">
+    <div class="tbl"><table>
+      <tr><th>Abordagem</th><th>Base</th><th>Exemplos</th></tr>
+      <tr><td><strong>Quantitativa</strong></td><td>Dados, probabilidades, custos, modelos</td><td>Matriz ponderada, valor esperado, árvore de decisão, ponto de equilíbrio, programação linear, previsão, simulação, filas</td></tr>
+      <tr><td><strong>Qualitativa</strong></td><td>Experiência, percepção, contexto</td><td>Delphi, grupo nominal, cenários, benchmarking, análise documental</td></tr>
+      <tr><td><strong>Integrada</strong></td><td>Dados + julgamento</td><td>Matriz multicritério validada por especialistas</td></tr>
+    </table></div>
+    <div class="trap"><b class="lbl">Limitações dos quantitativos</b>Falsa sensação de precisão, dependência da qualidade dos dados, dificuldade de representar valores sociais, sensibilidade às premissas. “O cálculo pode estar correto e a decisão continuar conceitualmente frágil.”</div>
+
+    <div class="calc" id="mtxcalc">
+      <h3>Matriz de decisão ponderada</h3>
+      <div class="f" style="margin-top:10px">P<sub>j</sub> = Σ w<sub>i</sub> × a<sub>ij</sub> &nbsp;&nbsp;<span class="muted">(peso do critério × nota da alternativa, somados)</span></div>
+      <p class="muted" style="margin-top:10px;font-size:.9rem">Preenchida com a atividade de escolha de fornecedor. Notas de 1 a 5; pesos em %. Mude um peso para fazer a análise de sensibilidade.</p>
+      <div class="tbl mtx" style="margin-top:10px"><table id="mtx"></table></div>
+      <div class="btnrow"><button type="button" id="mtxFor" class="primary">Caso: fornecedor</button><button type="button" id="mtxEq">Caso: equipamento</button></div>
+      <p id="mtxMsg" style="margin-top:10px"></p>
+    </div>
+
+    <div class="grid2">
+      <div class="card"><h3>Valor esperado (VE)</h3>
+        <div class="f">VE = Σ (probabilidade × resultado)</div>
+        <p>Lançamento: 40% de +R$ 200 mil e 60% de −R$ 40 mil</p>
+        <div class="f">0,40×200.000 + 0,60×(−40.000) = <em>R$ 56.000</em></div>
+        <p class="muted" style="font-size:.9rem">É uma média probabilística, não garantia — os extremos continuam podendo ocorrer.</p></div>
+      <div class="card"><h3>Árvore simples (exemplo da aula)</h3>
+        <div class="f">Manutenção: 0,7×60k + 0,3×30k = 51k − 20k = <em>31k</em></div>
+        <div class="f">Máquina nova: 0,9×100k + 0,1×60k = 96k − 50k = <em>46k</em></div>
+        <p>Decisão: <strong>máquina nova</strong> (VME líquido maior, vantagem de R$ 15 mil).</p>
+        <div class="f">VME<sub>líquido</sub> = VME<sub>retornos</sub> − custo inicial</div></div>
+    </div>
+
+    <h3>Árvore em dois estágios — frigorífico (atividade 17/09, resolvida)</h3>
+    <p class="muted">Ano 1: 65% cresce / 35% cai. Ano 2: 30% alta, 50% média, 20% baixa. Valores em R$ mil. Resolve da <strong>direita para a esquerda</strong>: em nó de acaso tira a média ponderada; em nó de decisão desconta o custo e fica com o maior.</p>
+    <div class="tree"><svg id="tree" viewBox="0 0 980 600" role="img" aria-label="Árvore de decisão resolvida do frigorífico"></svg></div>
+    <div class="legend"><span>■ decisão</span><span>● acaso</span><span>▶ resultado</span><span style="color:var(--teal)">━ caminho ótimo</span></div>
+    <div class="tbl"><table>
+      <tr><th>Ramo</th><th>VE dos retornos (ano 2)</th><th class="num">− custo</th><th class="num">Líquido</th></tr>
+      <tr><td>Nova linha → cresce → 2ª linha</td><td class="mono">0,3×110 + 0,5×80 + 0,2×50 = 83</td><td class="num">−25</td><td class="num">58</td></tr>
+      <tr class="win"><td>Nova linha → cresce → turno extra ✓</td><td class="mono">0,3×90 + 0,5×70 + 0,2×45 = 71</td><td class="num">−8</td><td class="num">63</td></tr>
+      <tr><td>Nova linha → cai → capacidade atual</td><td class="mono">0,3×75 + 0,5×55 + 0,2×35 = 57</td><td class="num">0</td><td class="num">57</td></tr>
+      <tr><td>Turno extra → cresce → nova linha</td><td class="mono">0,3×100 + 0,5×75 + 0,2×45 = 76,5</td><td class="num">−30</td><td class="num">46,5</td></tr>
+      <tr class="win"><td>Turno extra → cresce → linha + turno ✓</td><td class="mono">0,3×120 + 0,5×90 + 0,2×55 = 92</td><td class="num">−38</td><td class="num">54</td></tr>
+      <tr><td>Turno extra → cai → manter turno</td><td class="mono">0,3×70 + 0,5×50 + 0,2×30 = 52</td><td class="num">−8</td><td class="num">44</td></tr>
+      <tr><td><strong>Nova linha (ano 1)</strong></td><td class="mono">0,65×63 + 0,35×57 = 60,9</td><td class="num">−30</td><td class="num"><strong>30,9</strong></td></tr>
+      <tr class="win"><td><strong>Turno extra (ano 1) ✓</strong></td><td class="mono">0,65×54 + 0,35×44 = 50,5</td><td class="num">−8</td><td class="num"><strong>42,5</strong></td></tr>
+    </table></div>
+    <div class="key"><b class="lbl">Estratégia ótima</b>Começar com o <strong>turno extra</strong> (VME líquido R$ 42.500 vs R$ 30.900). Se as vendas <strong>crescerem</strong>: instalar a nova linha e manter o turno (R$ 54 mil). Se <strong>caírem</strong>: manter o turno extra (R$ 44 mil).</div>
+
+    <div class="grid3">
+      <div class="card"><h3>Delphi</h3><p>Rodadas anônimas com especialistas. + reduz pressão hierárquica, favorece reflexão, registra argumentos. − demora, depende da escolha dos especialistas, consenso ≠ verdade.</p></div>
+      <div class="card"><h3>Grupo nominal</h3><p>Problema → ideias individuais → rodadas → esclarecimento → votação. <strong>Separa geração de avaliação</strong>, evita que poucas pessoas dominem.</p></div>
+      <div class="card"><h3>Triangulação</h3><p>Métodos diferentes apontando para a mesma alternativa = decisão robusta. Se divergem: <strong>investigar, não tirar média</strong>.</p></div>
+    </div>
+    <div class="trap"><b class="lbl">Análise de sensibilidade</b>“A decisão se mantém se os dados mudarem?” Varie pesos, notas e cenários (pessimista/realista/otimista). Se uma pequena mudança troca o vencedor, a decisão é sensível. No caso do fornecedor, B (4,30) e C (4,20) estão muito próximos → sensibilidade recomendada.</div>
+  </div>
+</section>
+
+<!-- ============ PONTO DE EQUILÍBRIO ============ -->
+<section class="block" id="pe">
+  <div class="sec-head"><span class="tag">AULA 9</span><h2>Ponto de equilíbrio</h2>
+  <p>Volume em que receita total = custo total → lucro zero. Também chamado ponto de ruptura ou ponto crítico.</p></div>
+  <div class="stack">
+    <div class="grid2">
+      <div class="card"><h3>Fórmulas</h3>
+        <div class="f">MCu = PVu − CVu</div>
+        <div class="f">IMC = MCu ÷ PVu</div>
+        <div class="f">PEq = CF ÷ MCu</div>
+        <div class="f">PE$ = PEq × PVu = CF ÷ IMC</div>
+        <div class="f">Q (lucro desejado) = (CF + LD) ÷ MCu</div>
+        <div class="f">MS = vendas previstas − PEq &nbsp;·&nbsp; MS% = MS ÷ vendas × 100</div>
+        <div class="f">Lucro = Q × MCu − CF</div>
+      </div>
+      <div class="card"><h3>Tipos de PE</h3>
+        <p><strong>Contábil</strong>: CF ÷ MCu — cobre todos os custos contabilizados.</p>
+        <p><strong>Econômico</strong>: (CF + lucro desejado ou custo de oportunidade) ÷ MCu.</p>
+        <p><strong>Financeiro</strong>: (CF − custos sem desembolso, como depreciação) ÷ MCu.</p>
+        <h3 style="margin-top:6px">Tipos de custo</h3>
+        <p><strong>Fixo</strong> (aluguel, depreciação) · <strong>variável</strong> (matéria-prima, embalagem, comissão) · <strong>semivariável</strong> (energia, manutenção) · <strong>em degraus</strong> (supervisor, novo turno).</p>
+      </div>
+    </div>
+
+    <div class="calc" id="pecalc">
+      <h3>Calculadora de ponto de equilíbrio</h3>
+      <div class="fields">
+        <label for="pv">Preço de venda (R$)<input type="number" id="pv" step="0.01"></label>
+        <label for="cv">Custo variável (R$)<input type="number" id="cv" step="0.01"></label>
+        <label for="cf">Custos fixos (R$)<input type="number" id="cf" step="100"></label>
+        <label for="dem">Demanda prevista (un)<input type="number" id="dem" step="10"></label>
+        <label for="ld">Lucro desejado (R$)<input type="number" id="ld" step="100"></label>
+        <label for="cap">Capacidade (un)<input type="number" id="cap" step="10"></label>
+      </div>
+      <div class="btnrow"><button type="button" id="peA" class="primary">Alimentos Paraná (exemplo)</button><button type="button" id="peB">Vale do Norte (atividade)</button></div>
+      <div class="out" id="peout"></div>
+      <div class="chart-wrap"><svg id="pechart" viewBox="0 0 640 300" aria-label="Gráfico de ponto de equilíbrio"></svg></div>
+    </div>
+
+    <div class="tbl"><table>
+      <tr><th>Atividade Frigorífico Vale do Norte</th><th>Conta</th><th class="num">Resposta</th></tr>
+      <tr><td>MCu</td><td class="mono">120 − 72</td><td class="num">R$ 48,00</td></tr>
+      <tr><td>IMC</td><td class="mono">48 ÷ 120</td><td class="num">40%</td></tr>
+      <tr><td>PE em quantidade</td><td class="mono">144.000 ÷ 48</td><td class="num">3.000 caixas</td></tr>
+      <tr><td>PE em receita</td><td class="mono">3.000 × 120</td><td class="num">R$ 360.000</td></tr>
+      <tr><td>Margem de segurança</td><td class="mono">3.800 − 3.000 · 800 ÷ 3.800</td><td class="num">800 cx · 21,05%</td></tr>
+      <tr><td>Lucro com 3.800</td><td class="mono">3.800 × 48 − 144.000</td><td class="num">R$ 38.400</td></tr>
+      <tr><td>Volume p/ lucro de R$ 96 mil</td><td class="mono">(144.000 + 96.000) ÷ 48</td><td class="num">5.000 caixas</td></tr>
+      <tr><td>Resultado com 2.800</td><td class="mono">2.800 × 48 − 144.000</td><td class="num down">−R$ 9.600</td></tr>
+    </table></div>
+
+    <div class="grid2">
+      <div class="card"><h3>Ponto de indiferença (manual × automatizado)</h3>
+        <div class="f">60.000 + 50Q = 150.000 + 25Q → 25Q = 90.000 → <em>Q = 3.600</em></div>
+        <p>Abaixo de 3.600: manual é mais barato. Acima: automatizado. <strong>Ponto de indiferença compara alternativas; ponto de equilíbrio compara receita × custo.</strong></p></div>
+      <div class="trap"><b class="lbl">Premissas e limitações</b>O modelo supõe preço, custo variável e custo fixo constantes, tudo o que é produzido é vendido, relações lineares e mix constante. Na prática há descontos, horas extras, custos em degraus, perdas e estoque. No caso Alimentos Paraná, o lucro de R$ 64 mil exige 5.000 caixas (100% da capacidade) com demanda de 3.600 → “existe só na planilha?”</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SUSTENTABILIDADE ============ -->
+<section class="block" id="sust">
+  <div class="sec-head"><span class="tag">AULAS 10–11</span><h2>Produção sustentável e economia circular</h2>
+  <p>Toda operação gera saídas não desejadas (efluentes, emissões, resíduos, ruído). Gerir de forma sustentável é minimizá-las sem comprometer o valor entregue.</p></div>
+  <div class="stack">
+    <div class="tbl"><table>
+      <tr><th>Dimensão</th><th>Pergunta central</th><th>Exemplos</th></tr>
+      <tr><td>Econômica</td><td>É viável no longo prazo?</td><td>Custos, produtividade, rentabilidade</td></tr>
+      <tr><td>Ambiental</td><td>Como usa recursos e afeta ecossistemas?</td><td>Água, energia, resíduos, emissões</td></tr>
+      <tr><td>Social</td><td>Como afeta pessoas e comunidades?</td><td>Saúde, segurança, condições de trabalho</td></tr>
+      <tr><td>Operacional</td><td>A melhoria pode ser mantida?</td><td>Qualidade, capacidade, confiabilidade</td></tr>
+    </table></div>
+    <div class="card"><h3>Evolução das abordagens ambientais</h3>
+      <ol><li><strong>Diluição</strong> (até 1950) — dispersar a poluição</li><li><strong>Fim de tubo</strong> (1960–70) — tratar depois de gerado (filtros, ETE, incineração). Trata a consequência, não a causa, e gera custo extra</li><li><strong>Prevenção</strong> (1970–80) — agir na fonte: substituir, reduzir, reaproveitar, reformular. “Por que o resíduo está sendo gerado?”</li><li><strong>Produção mais limpa</strong> (1990) — prevenção <em>contínua</em> e sistemática, não ação pontual</li><li><strong>Ciclo de vida</strong> (2000) — etapas antes e depois da fábrica</li><li><strong>Circularidade</strong> (2010–hoje) — preservar o valor de produtos e materiais</li></ol></div>
+    <div class="grid2">
+      <div class="card"><h3>Hierarquia da produção mais limpa</h3><ol><li>Redução na fonte</li><li>Reutilização interna</li><li>Reciclagem externa</li><li>Tratamento</li><li>Disposição final</li></ol><p class="muted" style="font-size:.9rem">Quanto mais perto da origem, maior o potencial preventivo.</p></div>
+      <div class="card"><h3>Ecoeficiência</h3><div class="f">Ecoeficiência = valor gerado ÷ impacto ambiental</div><p>Criar mais valor com menos recursos e impacto. A fórmula é conceitual: impactos de naturezas diferentes não se somam.</p><p><strong>Resíduo</strong> ainda pode ser aproveitado; <strong>rejeito</strong> não tem alternativa viável de recuperação.</p></div>
+    </div>
+    <div class="tbl"><table>
+      <tr><th>Aspecto</th><th>Indicador típico</th></tr>
+      <tr><td>Materiais</td><td>kg de MP ÷ unidade · % perdas = (MP entrada − MP no produto) ÷ MP entrada × 100 · rendimento % · % reciclado</td></tr>
+      <tr><td>Energia</td><td>kWh ÷ unidade · R$ energia ÷ unidade · % renovável · kgCO₂e = kWh × fator de emissão</td></tr>
+      <tr><td>Água</td><td>L ÷ unidade · % reutilizada · efluente = água que entra − água no produto · carga = volume × concentração</td></tr>
+      <tr><td>Resíduos / emissões</td><td>kg por tonelada · kgCO₂e por unidade</td></tr>
+      <tr><td>Outros</td><td>% materiais recuperados · não conformidades legais · reclamações da comunidade · % fornecedores avaliados</td></tr>
+    </table></div>
+    <div class="trap"><b class="lbl">Greenwashing</b>Indicador <strong>relativo</strong> melhorando com volume crescente pode esconder piora do impacto <strong>absoluto</strong>. Outros sinais: ação isolada vendida como transformação, meta sem indicador verificável, omissão das etapas mais impactantes do ciclo de vida, transferir impacto para fornecedores, focar em reciclagem enquanto o desperdício na origem cresce.</div>
+
+    <div class="grid2">
+      <div class="card"><h3>Linear × circular</h3>
+        <p><strong>Linear</strong>: extrair → produzir → consumir → descartar. Resíduo “por design”.</p>
+        <p><strong>Circular</strong>: eliminar resíduo desde o projeto, manter produtos e materiais em uso, preservar valor, regenerar sistemas naturais. É reconfiguração do sistema produtivo, não só gestão de resíduos. Circular não significa circular para sempre sem perdas.</p></div>
+      <div class="card"><h3>Hierarquia circular (Stahel)</h3><p><strong>Reutilizar &gt; reparar &gt; remanufaturar &gt; reciclar.</strong> Estratégias do topo preservam mais valor. Reciclar deve ser recurso, não o objetivo principal.</p><p><strong>O projeto determina os impactos</strong>: quanto mais tarde a mudança, mais cara.</p></div>
+    </div>
+    <div class="tbl"><table>
+      <tr><th>Termo</th><th>Significado</th></tr>
+      <tr><td><strong>Reciclável</strong></td><td>Pode <em>tecnicamente</em> virar matéria-prima (possibilidade)</td></tr>
+      <tr><td><strong>Reciclado</strong></td><td>Contém material <em>efetivamente</em> recuperado (fato realizado)</td></tr>
+      <tr><td>Reutilizável</td><td>Usado de novo sem transformação industrial</td></tr>
+      <tr><td>Retornável</td><td>Volta ao fabricante/distribuidor para novo ciclo</td></tr>
+      <tr><td>Reparável</td><td>Recupera peças/funções com manutenção</td></tr>
+      <tr><td>Remanufaturável</td><td>Restaurado industrialmente ao padrão original</td></tr>
+      <tr><td>Biodegradável</td><td>Decomposto biologicamente em condições específicas</td></tr>
+      <tr><td>Compostável</td><td>Vira composto em condições controladas</td></tr>
+    </table></div>
+    <div class="grid3">
+      <div class="card"><h3>Ecodesign</h3><p>Critérios ambientais desde a concepção: menos material e menos tipos, sem substâncias perigosas, conteúdo reciclado, durabilidade, identificação dos materiais, fim de vida planejado.</p></div>
+      <div class="card"><h3>Projeto p/ desmontagem</h3><p>Menos tipos de fixadores, encaixes e parafusos em vez de cola, ferramentas comuns. Indicadores: tempo de desmontagem, nº de ferramentas, % componentes separáveis, nº de tipos de material.</p></div>
+      <div class="card"><h3>Logística reversa</h3><p>Planejar o retorno pós-uso para reuso, reparo, remanufatura, reciclagem ou destinação. Precisa de pontos de coleta, rastreabilidade, parceiros, incentivo ao consumidor e viabilidade econômica.</p></div>
+    </div>
+    <div class="grid2">
+      <div class="card"><h3>Modelos de negócio circulares</h3><p>Produto como serviço · compartilhamento · manutenção e reparo · revenda · remanufatura · embalagem retornável · <strong>simbiose industrial</strong> (resíduo de uma empresa vira insumo de outra) · refil.</p></div>
+      <div class="trap"><b class="lbl">Efeito rebote</b>Ganho de eficiência anulado pelo aumento de consumo que o próprio ganho provoca. E: embalagem com símbolo de reciclável, mas com materiais colados, pigmento escuro e sem coleta na região, <strong>não é circular na prática</strong> — reciclabilidade depende do produto <em>e</em> do sistema.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FORMULÁRIO ============ -->
+<section class="block" id="formulas">
+  <div class="sec-head"><span class="tag">COLA DE REVISÃO</span><h2>Formulário</h2>
+  <p>Tudo o que envolve conta, numa página. Imprime bem.</p></div>
+  <div class="sheet">
+    <div class="fi"><h4>Produtividade</h4><div class="f">P = saídas ÷ entradas</div><div class="f">Parcial = qtd ÷ 1 recurso (h, kg, kWh…)</div><div class="f">PMF = R$ saídas ÷ R$ recursos</div><p>Sempre com unidade: un/h, un/kg, un/kWh.</p></div>
+    <div class="fi"><h4>Variação</h4><div class="f">Var% = (novo − anterior) ÷ anterior × 100</div><p>Diferença entre percentuais = pontos percentuais (5% → 3% = −2 p.p., mas −40% relativo).</p></div>
+    <div class="fi"><h4>Qualidade e capacidade</h4><div class="f">Produção boa = total − rejeitadas</div><div class="f">Índice de qualidade = boa ÷ total × 100</div><div class="f">Rejeição = rejeitadas ÷ total × 100</div><div class="f">Capacidade = capac./h × horas</div><div class="f">Utilização = real ÷ capacidade × 100</div></div>
+    <div class="fi"><h4>Indicadores das prioridades</h4><div class="f">Custo/un = custo total ÷ qtd</div><div class="f">% desperdício = desperd. ÷ total × 100</div><div class="f">Tempo de ciclo = tempo total ÷ unidades</div><div class="f">% no prazo = no prazo ÷ total × 100</div><div class="f">Não qualidade = falhas int. + ext.</div></div>
+    <div class="fi"><h4>Matriz ponderada</h4><div class="f">P = Σ peso × nota</div><p>Pesos somam 100%. Depois: análise de sensibilidade.</p></div>
+    <div class="fi"><h4>Valor esperado / árvore</h4><div class="f">VE = Σ prob × resultado</div><div class="f">VME líq = VE retornos − custo</div><p>Direita → esquerda. Acaso: média ponderada. Decisão: maior valor líquido. □ decisão · ○ acaso · △ resultado.</p></div>
+    <div class="fi"><h4>Ponto de equilíbrio</h4><div class="f">MCu = PV − CV</div><div class="f">IMC = MCu ÷ PV</div><div class="f">PEq = CF ÷ MCu</div><div class="f">PE$ = CF ÷ IMC</div><div class="f">PEE = (CF + LD) ÷ MCu</div><div class="f">PEF = (CF − depreciação) ÷ MCu</div><div class="f">MS% = (vendas − PEq) ÷ vendas × 100</div><div class="f">Indiferença: CF₁ + CV₁Q = CF₂ + CV₂Q</div></div>
+    <div class="fi"><h4>Ambientais</h4><div class="f">kWh/un · L/un · kg MP/un</div><div class="f">% perdas = (entra − no produto) ÷ entra × 100</div><div class="f">kgCO₂e = kWh × fator</div><div class="f">Carga = volume × concentração</div></div>
+  </div>
+</section>
+
+<!-- ============ QUIZ ============ -->
+<section class="block" id="quiz">
+  <div class="sec-head"><span class="tag">SIMULADO</span><h2>Teste rápido</h2>
+  <p>Questões no estilo das atividades de sala, com explicação depois de cada resposta. A ordem embaralha a cada rodada.</p></div>
+  <div class="quiz" id="qz"></div>
+</section>
+
+<footer>Baseado nos slides das aulas 1–11 e nos gabaritos do Prof. Solano Ribeiro Soares (UNIPAR). Árvore de dois estágios resolvida a partir do enunciado da atividade de 17/09.</footer>
+</div>
+
+<script>
+(function(){
+/* ---------- countdown ---------- */
+const exam=new Date(2026,8,24); const now=new Date(); now.setHours(0,0,0,0);
+const d=Math.round((exam-now)/864e5);
+const cd=document.getElementById('cd'), cdl=document.getElementById('cdl');
+if(d>1){cd.textContent=d;}
+else if(d===1){cd.textContent='1';cdl.innerHTML='dia para a prova<br>qui · 24/09/2026';}
+else if(d===0){cd.textContent='HOJE';cdl.innerHTML='é a prova<br>boa sorte';}
+else {cd.textContent='✓';cdl.innerHTML='prova realizada<br>24/09/2026';}
+
+/* ---------- review map ---------- */
+const blocks=[["fund","Aulas 1–4","Fundamentos, bens × serviços, objetivos, gerente"],["prod","Aula 5 + FrigoVale","Produtividade"],["estr","Aula 6","Competitividade e estratégia"],["dec","Aula 7","Tomada de decisão"],["met","Aula 8 + árvore","Métodos de apoio à decisão"],["pe","Aula 9","Ponto de equilíbrio"],["sust","Aulas 10–11","Sustentabilidade e circularidade"]];
+let done={}; try{done=JSON.parse(localStorage.getItem('adp-done')||'{}')}catch(e){}
+const map=document.getElementById('map');
+blocks.forEach(([id,n,t])=>{const l=document.createElement('label');l.innerHTML=`<input type="checkbox" id="chk-${id}" ${done[id]?'checked':''}><span><span class="n">${n}</span>${t}</span>`;map.appendChild(l);l.querySelector('input').addEventListener('change',e=>{done[id]=e.target.checked;try{localStorage.setItem('adp-done',JSON.stringify(done))}catch(_){}paint();});});
+function paint(){const c=blocks.filter(b=>done[b[0]]).length;document.getElementById('barfill').style.width=(c/blocks.length*100)+'%';document.getElementById('barlbl').textContent=`${c} de ${blocks.length} blocos revisados`;document.querySelectorAll('#toc a[data-s]').forEach(a=>a.classList.toggle('done',!!done[a.dataset.s]));}
+paint();
+
+const fmt=(n,dg=2)=>n.toLocaleString('pt-BR',{minimumFractionDigits:dg,maximumFractionDigits:dg});
+const brl=n=>(n<0?'−':'')+'R$ '+fmt(Math.abs(n));
+const intf=n=>Math.round(n).toLocaleString('pt-BR');
+
+/* ---------- matrix ---------- */
+const cases={
+ for:{alts:["Fornecedor A","Fornecedor B","Fornecedor C"],crit:[["Preço",25,[5,3,4]],["Qualidade",30,[3,5,4]],["Entrega no prazo",25,[2,5,4]],["Flexibilidade",10,[3,4,5]],["Sustentabilidade",10,[2,4,5]]]},
+ eq:{alts:["Equip. A","Equip. B","Equip. C"],crit:[["Custo",25,[5,3,4]],["Qualidade",30,[3,5,4]],["Produtividade",20,[3,5,4]],["Flexibilidade",15,[5,2,4]],["Manutenção",10,[4,3,5]]]}
+};
+const mtx=document.getElementById('mtx'); let cur;
+function loadM(k){cur=JSON.parse(JSON.stringify(cases[k]));
+ let h=`<tr><th>Critério</th><th>Peso %</th>${cur.alts.map(a=>`<th>${a}</th>`).join('')}</tr>`;
+ cur.crit.forEach((c,i)=>{h+=`<tr><td>${c[0]}</td><td><input type="number" id="w${i}" min="0" max="100" value="${c[1]}"></td>${c[2].map((v,j)=>`<td><input type="number" id="a${i}_${j}" min="1" max="5" value="${v}"></td>`).join('')}</tr>`});
+ h+=`<tr><td><strong>Pontuação</strong></td><td class="num" id="wsum"></td>${cur.alts.map((a,j)=>`<td class="num" id="s${j}"></td>`).join('')}</tr>`;
+ mtx.innerHTML=h; mtx.querySelectorAll('input').forEach(i=>i.addEventListener('input',calcM)); calcM();}
+function calcM(){const n=cur.crit.length;let ws=0;const w=[];for(let i=0;i<n;i++){w[i]=+document.getElementById('w'+i).value||0;ws+=w[i];}
+ const sc=cur.alts.map((a,j)=>{let s=0;for(let i=0;i<n;i++)s+=w[i]/100*(+document.getElementById(`a${i}_${j}`).value||0);return s;});
+ document.getElementById('wsum').textContent=ws+'%';document.getElementById('wsum').style.color=ws===100?'':'var(--bad)';
+ const mx=Math.max(...sc);sc.forEach((s,j)=>{const c=document.getElementById('s'+j);c.innerHTML=`<strong>${fmt(s)}</strong>`;c.classList.toggle('win',s===mx);});
+ const ord=sc.map((s,j)=>[s,cur.alts[j]]).sort((a,b)=>b[0]-a[0]);
+ const gap=ord[0][0]-ord[1][0];
+ document.getElementById('mtxMsg').innerHTML=(ws!==100?`<span style="color:var(--bad)">Os pesos somam ${ws}% — ajuste para 100%.</span> `:'')+`Ranking: ${ord.map((o,i)=>`${i+1}º ${o[1]} (${fmt(o[0])})`).join(' · ')}. `+(gap<0.2?`Diferença de só ${fmt(gap)} entre os dois primeiros → decisão sensível, vale testar outros pesos.`:`Diferença de ${fmt(gap)} para o 2º colocado.`);}
+document.getElementById('mtxFor').onclick=()=>loadM('for');document.getElementById('mtxEq').onclick=()=>loadM('eq');loadM('for');
+
+/* ---------- break-even ---------- */
+const peCases={A:{pv:80,cv:48,cf:96000,dem:3600,ld:64000,cap:5000},B:{pv:120,cv:72,cf:144000,dem:3800,ld:96000,cap:5000}};
+const ids=['pv','cv','cf','dem','ld','cap'];
+function loadPE(k){ids.forEach(i=>document.getElementById(i).value=peCases[k][i]);calcPE();}
+ids.forEach(i=>document.getElementById(i).addEventListener('input',calcPE));
+function calcPE(){const v={};ids.forEach(i=>v[i]=+document.getElementById(i).value||0);
+ const mc=v.pv-v.cv, imc=v.pv?mc/v.pv:0, peq=mc>0?v.cf/mc:NaN, per=peq*v.pv, qld=mc>0?(v.cf+v.ld)/mc:NaN, ms=v.dem-peq, msp=v.dem?ms/v.dem*100:0, lucro=v.dem*mc-v.cf;
+ const out=[["MCu",brl(mc)],["IMC",fmt(imc*100)+'%'],["PE (quantidade)",isFinite(peq)?intf(Math.ceil(peq-1e-9))+' un':'—'],["PE (receita)",isFinite(per)?brl(per):'—'],["Margem de segurança",isFinite(ms)?intf(ms)+' un · '+fmt(msp)+'%':'—',ms<0?'neg':''],["Lucro na demanda",brl(lucro),lucro<0?'neg':'pos'],["Volume p/ lucro desejado",isFinite(qld)?intf(Math.ceil(qld-1e-9))+' un':'—',qld>v.cap?'neg':''],["Uso da capacidade p/ LD",isFinite(qld)&&v.cap?fmt(qld/v.cap*100,1)+'%':'—',qld>v.cap?'neg':'']];
+ document.getElementById('peout').innerHTML=out.map(o=>`<div><small>${o[0]}</small><b class="${o[2]||''}">${o[1]}</b></div>`).join('');
+ drawPE(v,peq,qld);}
+function drawPE(v,peq,qld){const svg=document.getElementById('pechart');const W=640,H=300,L=64,R=16,T=16,B=40;
+ let xmax=Math.max(v.cap,v.dem,isFinite(qld)?qld:0,isFinite(peq)?peq*1.4:0)*1.05||1000;
+ const step=niceStep(xmax/6); xmax=Math.ceil(xmax/step)*step;
+ let ymax=Math.max(v.pv*xmax,v.cf+v.cv*xmax); const ys=niceStep(ymax/5); ymax=Math.ceil(ymax/ys)*ys;
+ const X=q=>L+q/xmax*(W-L-R), Y=y=>H-B-y/ymax*(H-T-B);
+ let s='';
+ for(let y=0;y<=ymax+1e-6;y+=ys){s+=`<line x1="${L}" x2="${W-R}" y1="${Y(y)}" y2="${Y(y)}" stroke="var(--line)" stroke-width="1"/><text x="${L-8}" y="${Y(y)+4}" text-anchor="end" font-size="11" fill="var(--muted)" font-family="IBM Plex Mono,monospace">${y>=1000?intf(y/1000)+'k':intf(y)}</text>`;}
+ for(let x=0;x<=xmax+1e-6;x+=step){s+=`<text x="${X(x)}" y="${H-B+16}" text-anchor="middle" font-size="11" fill="var(--muted)" font-family="IBM Plex Mono,monospace">${intf(x)}</text>`;}
+ s+=`<text x="${(L+W-R)/2}" y="${H-6}" text-anchor="middle" font-size="11" fill="var(--muted)" font-family="IBM Plex Mono,monospace">quantidade (un)</text>`;
+ if(isFinite(peq)&&peq<=xmax){s+=`<polygon points="${X(0)},${Y(0)} ${X(0)},${Y(v.cf)} ${X(peq)},${Y(peq*v.pv)}" fill="var(--bad)" opacity=".12"/>`;s+=`<polygon points="${X(peq)},${Y(peq*v.pv)} ${X(xmax)},${Y(xmax*v.pv)} ${X(xmax)},${Y(v.cf+v.cv*xmax)}" fill="var(--good)" opacity=".14"/>`;}
+ s+=`<line x1="${X(0)}" y1="${Y(v.cf)}" x2="${X(xmax)}" y2="${Y(v.cf)}" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="5 4"/>`;
+ s+=`<line x1="${X(0)}" y1="${Y(v.cf)}" x2="${X(xmax)}" y2="${Y(v.cf+v.cv*xmax)}" stroke="var(--bad)" stroke-width="2.5"/>`;
+ s+=`<line x1="${X(0)}" y1="${Y(0)}" x2="${X(xmax)}" y2="${Y(v.pv*xmax)}" stroke="var(--teal)" stroke-width="2.5"/>`;
+ if(v.dem&&v.dem<=xmax)s+=`<line x1="${X(v.dem)}" x2="${X(v.dem)}" y1="${Y(0)}" y2="${T}" stroke="var(--ink)" stroke-width="1" stroke-dasharray="2 3"/><text x="${X(v.dem)+4}" y="${T+10}" font-size="11" fill="var(--ink)" font-family="IBM Plex Mono,monospace">demanda ${intf(v.dem)}</text>`;
+ if(isFinite(peq)&&peq<=xmax){s+=`<circle cx="${X(peq)}" cy="${Y(peq*v.pv)}" r="6" fill="var(--mark)" stroke="var(--ink)" stroke-width="1.5"/><text x="${X(peq)-8}" y="${Y(peq*v.pv)-12}" text-anchor="end" font-size="12" font-weight="600" fill="var(--ink)" font-family="IBM Plex Mono,monospace">PE ${intf(peq)}</text>`;}
+ s+=`<g font-size="11" font-family="IBM Plex Mono,monospace"><rect x="${L+8}" y="${T+4}" width="12" height="3" fill="var(--teal)"/><text x="${L+24}" y="${T+9}" fill="var(--ink)">Receita total</text><rect x="${L+8}" y="${T+20}" width="12" height="3" fill="var(--bad)"/><text x="${L+24}" y="${T+25}" fill="var(--ink)">Custo total</text><rect x="${L+8}" y="${T+36}" width="12" height="2" fill="var(--muted)"/><text x="${L+24}" y="${T+41}" fill="var(--ink)">Custo fixo</text></g>`;
+ svg.innerHTML=s;}
+function niceStep(r){const p=Math.pow(10,Math.floor(Math.log10(r||1)));const m=r/p;return (m<=1?1:m<=2?2:m<=5?5:10)*p;}
+document.getElementById('peA').onclick=()=>loadPE('A');document.getElementById('peB').onclick=()=>loadPE('B');loadPE('A');
+
+/* ---------- decision tree ---------- */
+(function(){
+ const leaf=(p,v)=>({t:'L',lab:p,v});
+ const three=(a,b,c)=>[leaf('Alta 30%',a),leaf('Média 50%',b),leaf('Baixa 20%',c)];
+ const tree={t:'D',v:42.5,kids:[
+  {lab:'Nova linha (−30)',opt:false,n:{t:'C',v:60.9,net:30.9,kids:[
+    {lab:'Cresce 65%',n:{t:'D',v:63,kids:[
+      {lab:'2ª linha (−25)',opt:false,n:{t:'C',v:83,net:58,kids:three(110,80,50)}},
+      {lab:'Turno extra (−8)',opt:true,n:{t:'C',v:71,net:63,kids:three(90,70,45)}}]}},
+    {lab:'Cai 35%',n:{t:'D',v:57,kids:[
+      {lab:'Capac. atual (0)',opt:true,n:{t:'C',v:57,net:57,kids:three(75,55,35)}}]}}]}},
+  {lab:'Turno extra (−8)',opt:true,n:{t:'C',v:50.5,net:42.5,kids:[
+    {lab:'Cresce 65%',n:{t:'D',v:54,kids:[
+      {lab:'Nova linha (−30)',opt:false,n:{t:'C',v:76.5,net:46.5,kids:three(100,75,45)}},
+      {lab:'Linha + turno (−38)',opt:true,n:{t:'C',v:92,net:54,kids:three(120,90,55)}}]}},
+    {lab:'Cai 35%',n:{t:'D',v:44,kids:[
+      {lab:'Manter turno (−8)',opt:true,n:{t:'C',v:52,net:44,kids:three(70,50,30)}}]}}]}}
+ ]};
+ const colX=[30,250,450,700,900]; let row=0; const gap=31, top=22;
+ function layout(n,depth,onPath){n.x=colX[depth];n.on=onPath;
+  if(n.t==='L'){n.y=top+row*gap;row++;return n.y;}
+  const kids=n.kids.map(k=>k.n?k:{n:k});
+  const ys=n.kids.map(k=>{const child=k.n||k;const path=onPath&&(n.t==='C'||k.opt!==false&&(n.t!=='D'||k.opt));return layout(child,depth+1,path);});
+  n.y=(Math.min(...ys)+Math.max(...ys))/2;return n.y;}
+ layout(tree,0,true);
+ let s='';const mono='font-family="IBM Plex Mono,monospace"';
+ function draw(n){
+  if(n.kids)n.kids.forEach(k=>{const c=k.n||k;const hot=c.on&&n.on;
+   const mx=n.x+40;
+   s+=`<path d="M${n.x+9},${n.y} L${mx},${n.y} L${mx},${c.y} L${c.x-10},${c.y}" fill="none" stroke="${hot?'var(--teal)':'var(--line)'}" stroke-width="${hot?3:1.5}"/>`;
+   if(k.lab&&k.n){s+=`<text x="${mx+6}" y="${c.y-6}" font-size="11.5" fill="${hot?'var(--teal)':'var(--muted)'}" font-weight="${hot?600:400}" ${mono}>${k.lab}</text>`;}
+   draw(c);});
+  if(n.t==='D'){s+=`<rect x="${n.x-9}" y="${n.y-9}" width="18" height="18" fill="var(--ink)"/>`;s+=`<text x="${n.x}" y="${n.y+26}" text-anchor="middle" font-size="12" font-weight="600" fill="var(--ink)" ${mono}>${fmt(n.v,1)}</text>`;}
+  else if(n.t==='C'){s+=`<circle cx="${n.x}" cy="${n.y}" r="9" fill="var(--surface)" stroke="var(--ink)" stroke-width="2"/>`;s+=`<text x="${n.x-14}" y="${n.y+20}" text-anchor="end" font-size="11.5" fill="var(--ink)" ${mono}>VE ${fmt(n.v,1)}${n.net!==n.v?' → '+fmt(n.net,1):''}</text>`;}
+  else {s+=`<polygon points="${n.x-8},${n.y-7} ${n.x+6},${n.y} ${n.x-8},${n.y+7}" fill="var(--muted)"/><text x="${n.x+12}" y="${n.y+4}" font-size="11.5" fill="var(--ink)" ${mono}>${n.v} <tspan fill="var(--muted)">${n.lab}</tspan></text>`;}
+ }
+ draw(tree);
+ const h=top+row*gap+10; const svg=document.getElementById('tree'); svg.setAttribute('viewBox',`0 0 1040 ${h}`); svg.innerHTML=s;
+})();
+
+/* ---------- quiz ---------- */
+const Q=[
+["Num hospital, o paciente é classificado no modelo de transformação como:",["Recurso de transformação","Recurso transformado","Saída do processo","Restrição da operação"],1,"O paciente (consumidor) sofre a mudança, então é recurso transformado. Médicos, equipamentos e instalações são recursos de transformação."],
+["A empresa A promete entregar em 2 dias e entrega em 4; a B promete 5 dias e sempre cumpre. É correto afirmar:",["A é mais confiável","B é mais rápida","A é mais rápida na promessa e B é mais confiável","As duas têm o mesmo desempenho"],2,"Rapidez é tempo; confiabilidade é cumprir o que foi prometido."],
+["Em janeiro: 800 un em 400 h. Em fevereiro: 1.000 un em 600 h. A produtividade da mão de obra:",["Subiu 25%","Caiu de 2,00 para 1,67 un/h","Subiu de 1,67 para 2,00 un/h","Ficou estável"],1,"800/400 = 2,00 e 1.000/600 = 1,67. A produção cresceu 25%, mas as horas cresceram 50%."],
+["“Um assento vazio em um voo não pode ser vendido depois da decolagem.” Essa é a característica de:",["Intangibilidade","Variabilidade","Perecibilidade","Simultaneidade"],2,"Perecibilidade: a capacidade do serviço não pode ser estocada — por isso equilibrar demanda e capacidade é crítico."],
+["Substituir hoje um trabalhador que faltou é uma decisão:",["Estratégica","Tática","Operacional","Corporativa"],2,"Curto prazo, alta frequência, impacto localizado. Ampliar o quadro permanentemente já seria tático/estratégico."],
+["Definir a política de estoques e selecionar fornecedores são decisões tipicamente:",["Estratégicas","Táticas","Operacionais","Não programadas"],1,"Médio prazo, transformam diretrizes em planos e distribuem recursos da estrutura existente."],
+["Reposição de estoque pelo ponto de pedido é exemplo de decisão:",["Programada","Não programada","Sob ambiguidade","Estratégica"],0,"Recorrente e com regra estabelecida. Não programadas são novas e exigem julgamento (ex.: fornecedor que para de entregar)."],
+["Uma máquina com probabilidade histórica conhecida de falha caracteriza uma decisão sob:",["Certeza","Risco","Incerteza","Ambiguidade"],1,"Risco = probabilidades estimáveis com base em dados. Incerteza = probabilidades desconhecidas."],
+["Segundo o modelo do cone de areia, a base sobre a qual as demais prioridades se constroem é:",["Custo","Flexibilidade","Rapidez","Qualidade"],3,"Qualidade → confiabilidade → rapidez → flexibilidade → custo (Ferdows e De Meyer)."],
+["Critérios que são condição mínima para a empresa ser considerada pelo cliente chamam-se:",["Ganhadores de pedido","Qualificadores","Prioridades competitivas","Trade-offs"],1,"Qualificadores colocam a empresa na lista; ganhadores fazem o cliente escolhê-la (Hill)."],
+["“Como competir?” é a pergunta central de qual nível da estratégia?",["Corporativa","De negócios","Funcional","Operacional"],1,"Corporativa: em quais negócios atuar. De negócios: como competir. Funcional: como cada área apoia. Operacional: como executar."],
+["Valor da produção R$ 180.000; recursos R$ 140.000. A produtividade multifatorial ≈ 1,29 significa:",["Lucro de 29%","R$ 1,29 de saída por R$ 1,00 de recurso","Margem de contribuição de 29%","Retorno sobre investimento de 1,29"],1,"A PMF não representa lucro, margem nem ROI."],
+["Produtividade passou de 12 para 15 un/h. A variação é:",["+3%","+20%","+25%","+80%"],2,"(15 − 12) ÷ 12 × 100 = +25%. Sempre divida pelo valor anterior."],
+["PV = R$ 120, CV = R$ 72, CF = R$ 144.000. O ponto de equilíbrio em quantidade é:",["1.200 caixas","2.000 caixas","3.000 caixas","5.000 caixas"],2,"MCu = 48; 144.000 ÷ 48 = 3.000 caixas."],
+["Com PE de 3.000 caixas e vendas previstas de 3.800, a margem de segurança percentual é:",["21,05%","26,67%","16,67%","80%"],0,"(3.800 − 3.000) ÷ 3.800 × 100 = 21,05%. Divide pelas vendas previstas, não pelo PE."],
+["Manual: CF 60.000 e CV 50. Automatizado: CF 150.000 e CV 25. Acima de quantas unidades o automatizado é mais barato?",["1.800","2.400","3.600","6.000"],2,"60.000 + 50Q = 150.000 + 25Q → Q = 3.600 (ponto de indiferença)."],
+["O ponto de equilíbrio financeiro difere do contábil porque:",["Soma o lucro desejado aos custos fixos","Exclui custos fixos sem desembolso, como depreciação","Usa o preço com desconto","Considera apenas custos variáveis"],1,"PEF = (CF − custos sem desembolso) ÷ MCu. Somar o lucro desejado é o PE econômico."],
+["Lançamento com 40% de chance de +R$ 200 mil e 60% de −R$ 40 mil. O valor esperado é:",["R$ 160.000","R$ 80.000","R$ 56.000","R$ 24.000"],2,"0,40 × 200.000 + 0,60 × (−40.000) = 80.000 − 24.000 = R$ 56.000."],
+["Na matriz do fornecedor, B fez 4,30 e C fez 4,20. A atitude mais adequada é:",["Contratar B automaticamente","Tirar a média entre B e C","Fazer análise de sensibilidade e complementar com método qualitativo","Descartar a matriz"],2,"Diferença pequena = decisão sensível. O método apoia, não decide sozinho."],
+["A técnica do grupo nominal tem como principal vantagem:",["Dispensar especialistas","Separar geração de ideias da avaliação e evitar dominação por poucos","Calcular probabilidades","Garantir consenso verdadeiro"],1,"Ideias são geradas individualmente antes da discussão e votação."],
+["Na árvore do frigorífico (atividade 17/09), a decisão inicial ótima é:",["Nova linha (VME líquido 30,9 mil)","Turno extra (VME líquido 42,5 mil)","Nova linha (VME 60,9 mil)","Indiferente"],1,"Nova linha: 0,65×63 + 0,35×57 = 60,9 − 30 = 30,9. Turno: 0,65×54 + 0,35×44 = 50,5 − 8 = 42,5."],
+["Na hierarquia da produção mais limpa, a intervenção de maior prioridade é:",["Tratamento","Reciclagem externa","Redução na fonte","Disposição final"],2,"Quanto mais perto da origem, maior o potencial preventivo."],
+["Filtros, estações de tratamento de efluentes e incineração representam a abordagem:",["Prevenção","Fim de tubo","Produção mais limpa","Circularidade"],1,"Fim de tubo trata o impacto depois de gerado: trata a consequência, não a causa."],
+["Um produto “reciclável” é aquele que:",["Contém material recuperado","Pode tecnicamente ser transformado em matéria-prima","Sempre será reciclado","Se decompõe biologicamente"],1,"Reciclável = possibilidade técnica. Reciclado = fato realizado. Depende também do sistema de coleta e mercado."],
+["Na hierarquia das estratégias circulares (Stahel), preserva mais valor:",["Reciclar","Incinerar com recuperação de energia","Reutilizar e reparar","Aterrar"],2,"Reutilizar, reparar e remanufaturar preservam mais valor que reciclar."],
+["A empresa reduziu o consumo de água por unidade, mas o volume produzido cresceu tanto que o consumo total aumentou. Divulgar só o indicador por unidade é sinal de:",["Ecoeficiência plena","Greenwashing","Simbiose industrial","Efeito rebote positivo"],1,"Indicadores relativos e absolutos devem ser analisados juntos."],
+["Resíduo de uma empresa usado como insumo por outra é o modelo de:",["Produto como serviço","Simbiose industrial","Logística reversa","Remanufatura"],1,"Simbiose industrial conecta cadeias produtivas diferentes."],
+["“Estamos entregando o resultado correto?” é a pergunta da:",["Eficiência","Eficácia","Produtividade","Flexibilidade"],1,"Eficiência: uso dos recursos. Eficácia: alcance dos objetivos."]
+];
+const qz=document.getElementById('qz');let order,idx,res;
+function start(){order=Q.map((_,i)=>i).sort(()=>Math.random()-.5);idx=0;res=[];show();}
+function show(){if(idx>=order.length)return end();const q=Q[order[idx]];
+ qz.innerHTML=`<div class="qhead"><span>Questão ${idx+1} de ${order.length}</span><span>Acertos ${res.filter(Boolean).length}</span></div><div class="qtext">${q[0]}</div><div class="opts">${q[1].map((o,i)=>`<button type="button" data-i="${i}">${String.fromCharCode(97+i)}) ${o}</button>`).join('')}</div><div id="ex"></div><div class="qnav"><div class="dots">${order.map((_,i)=>`<i class="${res[i]===true?'ok':res[i]===false?'no':''} ${i===idx?'cur':''}"></i>`).join('')}</div><button type="button" class="primary" id="nx" hidden>Próxima →</button></div>`;
+ qz.querySelectorAll('.opts button').forEach(b=>b.onclick=()=>{const i=+b.dataset.i,ok=i===q[2];res[idx]=ok;
+  qz.querySelectorAll('.opts button').forEach(x=>{x.disabled=true;if(+x.dataset.i===q[2])x.classList.add('ok');});if(!ok)b.classList.add('no');
+  document.getElementById('ex').innerHTML=`<div class="expl"><strong>${ok?'Certo.':'Não é essa.'}</strong> ${q[3]}</div>`;
+  const nx=document.getElementById('nx');nx.hidden=false;nx.textContent=idx===order.length-1?'Ver resultado':'Próxima →';nx.focus();nx.onclick=()=>{idx++;show();};});}
+function end(){const c=res.filter(Boolean).length,p=Math.round(c/order.length*100);
+ const wrong=order.map((qi,i)=>res[i]?null:Q[qi]).filter(Boolean);
+ qz.innerHTML=`<div class="qhead"><span>Resultado</span></div><div class="qtext">${c} de ${order.length} (${p}%) — ${p>=85?'pronto para a prova.':p>=65?'bom, revise os erros abaixo.':'vale reler os blocos antes de refazer.'}</div>${wrong.length?`<div class="tbl"><table><tr><th>Para revisar</th><th>Resposta</th></tr>${wrong.map(q=>`<tr><td>${q[0]}</td><td>${q[1][q[2]]}</td></tr>`).join('')}</table></div>`:''}<div class="qnav"><span></span><button type="button" class="primary" id="rs">Refazer embaralhado</button></div>`;
+ document.getElementById('rs').onclick=start;}
+start();
+})();
+</script>
