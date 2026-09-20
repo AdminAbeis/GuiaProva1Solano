@@ -1,3 +1,5 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Adm. da Produção — 1ª Prova</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -137,7 +139,9 @@ input[type=number]:focus-visible,button:focus-visible{outline:2px solid var(--te
 button{font:600 .85rem var(--mono);padding:8px 12px;border:1.5px solid var(--ink);background:var(--surface);color:var(--ink);cursor:pointer;border-radius:2px}
 button:hover{background:var(--sunken)}
 button.primary{background:var(--ink);color:var(--ground)}
-.mtx input{width:64px;padding:5px 6px;font-size:.9rem;text-align:center}
+.mtx input{width:64px;padding:5px 6px;text-align:center}
+/* iOS Safari dá zoom automático em campos com fonte < 16px */
+input,select,textarea{font-size:16px!important}
 .mtx td,.mtx th{text-align:center;vertical-align:middle}
 .mtx td:first-child,.mtx th:first-child{text-align:left}
 .win{background:var(--good-soft)}
